@@ -23,3 +23,8 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('typeTrimmed', { prevSubject: 'element' }, (subject, text) => {
+  const trimmed = text.trim();
+  cy.wrap(subject).clear().type(trimmed);
+});
