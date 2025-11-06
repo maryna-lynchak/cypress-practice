@@ -2,7 +2,7 @@ const { defineConfig } = require("cypress");
 
 module.exports = defineConfig({
   e2e: {
-   baseUrl: 'https://example.cypress.io',
+   baseUrl: 'https://guest:welcome2qauto@qauto.forstudy.space',
    retries: {
     runMode: 1,
     openMode: 1
@@ -13,6 +13,7 @@ module.exports = defineConfig({
  pageLoadTimeout: 30000,
  video: true,
  screenshotOnRunFailure: true
+
   },
   projectId: "mfzvwi",
 });
