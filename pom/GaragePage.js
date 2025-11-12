@@ -45,7 +45,7 @@ class GaragePage {
     }
 
     get submitAddingFormButton() {
-        return cy.get('app-add-car-modal .btn-primary');
+        return cy.get('div.modal-content .btn-primary');
     };
 
     get addedCarNames() {
@@ -91,40 +91,21 @@ class GaragePage {
     }
 
     verifyIncorrectModalMileageErrorMessage(mileage = 'mileage', value = '-1') {
-         this.openAddCarModal();
-         this.verifyIncorrectFieldErrorMessage('mileage','Mileage has to be from 0 to 999999');
-         this.closeAddCarModal();
-    }
-
-
-    verifyEmptyModalMileageErrorMessage(mileageField = 'mileage', value= 'empty') {
-     this.openAddCarModal();
-     this.verifyEmptyFieldErrorMessage('mileage', 'Mileage cost required');
-    this.closeAddCarModal();
-}
-
-         
-
-        
-    
-
-    verifyEmptyModalMileageErrorMessage() {
         this.openAddCarModal();
-        this.triggerErrorOnField('mileage');
-        this.emptyMileageMessage.should('be.visible')
-        .and('have.css', 'color','rgb(220, 53, 69)');
-        this.mileageField.should('have.css', 'border-color','rgb(220, 53, 69)');
+        this.mileageMessageError('mileage','Mileage has to be from 0 to 999999');
         this.closeAddCarModal();
     }
 
-
+    verifyEmptyModalMileageErrorMessage(mileageField = 'mileage', value= 'empty') {
+        this.openAddCarModal();
+        this.emptyMileageMessage('mileage', 'Mileage cost required');
+        this.closeAddCarModal();
+    }
 
     triggerErrorOnField(fieldName) {
         let element;
-
         if (fieldName === 'mileage') {
             element = this.mileageField;
-        
         } else {
             throw new Error('Mileage cost required');
         }
@@ -141,17 +122,72 @@ class GaragePage {
     }
 
     updateCarMileage(brand, model, newMileage) {
-        // todo
+        const carName = `${brand} ${model}`;
+        cy.contains('p.car_name', carName)
+            .parents('.car-item')
+            .find('.update-mileage-form_input')
+            .clear()
+            .type(newMileage);
+    }
+
+    verifyCarMileage(brand, model, expectedMileage) {
+        const carName = `${brand} ${model}`;
+        cy.contains('p.car_name', carName)
+            .parents('.car-item')
+            .find('.update-mileage-form_input')
+            .should('have.value', expectedMileage);
     }
 
     addCarFuelExpense(brand, model, ) {
         // todo
     }
 
-    verifyLastAddedCar(carName) {
+    verifyBrandOptions() {
+        this.brandDropdown.contains('option', 'Audi').should('exist');
+        this.brandDropdown.contains('option', 'BMW').should('exist');
+        this.brandDropdown.contains('option', 'Ford').should('exist');
+        this.brandDropdown.contains('option', 'Porsche').should('exist');
+        this.brandDropdown.contains('option', 'Fiat').should('exist');
+    }
+
+    verifyModelOptions(brand) {
+        this.brandDropdown.select(brand);
+        
+        if (brand === 'Audi') {
+            this.modelDropdown.contains('option', 'TT').should('exist');
+            this.modelDropdown.contains('option', 'R8').should('exist');
+            this.modelDropdown.contains('option', 'Q7').should('exist');
+            this.modelDropdown.contains('option', 'A6').should('exist');
+            this.modelDropdown.contains('option', 'A8').should('exist');
+        } else if (brand === 'BMW') {
+            this.modelDropdown.contains('option', '3').should('exist');
+            this.modelDropdown.contains('option', '5').should('exist');
+            this.modelDropdown.contains('option', 'X5').should('exist');
+            this.modelDropdown.contains('option', 'X6').should('exist');
+            this.modelDropdown.contains('option', 'Z3').should('exist');
+        } else if (brand === 'Ford') {
+            this.modelDropdown.contains('option', 'Fiesta').should('exist');
+            this.modelDropdown.contains('option', 'Focus').should('exist');
+            this.modelDropdown.contains('option', 'Fusion').should('exist');
+            this.modelDropdown.contains('option', 'Mondeo').should('exist');
+            this.modelDropdown.contains('option', 'Sierra').should('exist');
+        } else if (brand === 'Porsche') {
+            this.modelDropdown.contains('option', '911').should('exist');
+            this.modelDropdown.contains('option', 'Cayenne').should('exist');
+            this.modelDropdown.contains('option', 'Panamera').should('exist');
+        } else if (brand === 'Fiat') {
+            this.modelDropdown.contains('option', 'Palio').should('exist');
+            this.modelDropdown.contains('option', 'Ducato').should('exist');
+            this.modelDropdown.contains('option', 'Panda').should('exist');
+            this.modelDropdown.contains('option', 'Punto').should('exist');
+            this.modelDropdown.contains('option', 'Scudo').should('exist');
+        }
+    }
+
+    verifyLastAddedCar(brand, model) {
+        const carName = `${brand} ${model}`;
         this.addedCarNames.first().should('have.text', carName);
     };
-
 }
 
 export default new GaragePage();
