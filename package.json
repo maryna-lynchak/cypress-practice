@@ -3,12 +3,34 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "delete:reports": "rm cypress/results/* || true",
+    "combine:reports": "jrm cypress/results/combined-report.xml \"cypress/results/*.xml\"",
+    "prereport": "npm run delete:reports",
+    "report": "cypress run --reporter cypress-multi-reporters --reporter-options configFile=reporter-config.json",
+    "postreport": "npm run combine:reports",
+    
+    "cy:open:qauto": "cypress open --config-file cypress.config.qauto.js",
+    "cy:run:qauto": "cypress run --config-file cypress.config.qauto.js",
+    "cy:open:qauto2": "cypress open --config-file cypress.config.qauto2.js",
+    "cy:run:qauto2": "cypress run --config-file cypress.config.qauto2.js",
+
+    "report:merge": "mochawesome-merge cypress/reports/*.json > cypress/reports/merged.json",
+    "report:html": "marge cypress/reports/merged.json -f index -o cypress/reports/html",
+
+    "test:qauto": "npm run cy:run:qauto && npm run report:merge && npm run report:html",
+    "test:qauto2": "npm run cy:run:qauto2 && npm run report:merge && npm run report:html"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "cypress": "^15.5.0"
+    "cypress": "^15.6.0",
+    "cypress-multi-reporters": "^2.0.5",
+    "marge": "^1.0.1",
+    "mocha-junit-reporter": "^2.2.1",
+    "mochawesome": "^7.1.4",
+    "mochawesome-merge": "^5.0.0",
+    "mochawesome-report-generator": "^6.3.2"
   }
 }
